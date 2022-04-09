@@ -18,10 +18,3 @@ void printLoggedUsers()
         user = getutxent();
     }
 }
-
-int main(void)
-{
-    printLoggedUsers();
-
-    return 0;
-}

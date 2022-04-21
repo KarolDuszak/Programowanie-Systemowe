@@ -7,23 +7,36 @@
 
 int main(int argc, char **argv)
 {
+    int fh=0, fg=0;
     int opt;
     while ((opt = getopt(argc, argv, "hg")) != -1)
     {
         switch (opt)
         {
         case 'h':
-            printLoggedUsers();
+            fh = 1;
             break;
         case 'g':
-            printLoggedUsersAndHost();
-            break;
-        case '?':
-            printf("lol nie dziala \n");
-            break;            
-        default:
-            abort();
+            fg = 1;
+            break;      
         }
+    }
+
+    if(fg == 1 && fh == 1)
+    {
+        printf("Tu 2 switche\n");
+    }
+    else if(fh == 1)
+    {
+        printLoggedUsersAndHost();
+    }
+    else if(fg == 1)
+    {
+        printf("Tu ma byc switch g");
+    }
+    else
+    {
+        printLoggedUsers();
     }
 
     return 0;

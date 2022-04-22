@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "44312.ps.lab03.static.lib.h"
+#include <string.h>
 
 int main(int argc, char **argv)
 {
@@ -32,7 +33,27 @@ int main(int argc, char **argv)
     }
     else if(fg == 1)
     {
-        printf("Tu ma byc switch g");
+        char ** grupa;
+        struct utmpx *user;
+        struct passwd * uid;
+        user = getutxent();
+
+        while(user)
+        {
+            if(user->ut_type == 7)
+            {
+                printf("User: %s Groups:", user->ut_user);
+                uid = getpwnam(user->ut_user);
+                grupa = getLoggedUsersAndGroupList(user);
+                for(int i=0; i<sizeof(grupa)+1; i++)
+                {
+                    printf(" %s,", grupa[i]);
+                }
+                printf("\n");
+            }
+            user = getutxent();
+        }
+        
     }
     else
     {

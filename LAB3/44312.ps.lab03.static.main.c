@@ -44,8 +44,10 @@ int main(int argc, char **argv)
             {
                 printf("User: %s Groups:", user->ut_user);
                 uid = getpwnam(user->ut_user);
-                grupa = getLoggedUsersAndGroupList(user);
-                for(int i=0; i<sizeof(grupa)+1; i++)
+                int numOfGroups = 0;
+                grupa = getLoggedUsersAndGroupList(user, &numOfGroups);
+                
+                for(int i=0; i<numOfGroups; i++)
                 {
                     printf(" %s,", grupa[i]);
                 }

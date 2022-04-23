@@ -53,7 +53,7 @@ int main(int argc, char **argv)
             }
             user = getutxent();
         }
-        
+        free(grupa);
     }
     else
     {

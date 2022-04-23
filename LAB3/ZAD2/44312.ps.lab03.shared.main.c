@@ -19,9 +19,9 @@ int main(int argc, char **argv)
     void *handle = dlopen("./44312.ps.lab03.shared.lib.so.0.1", RTLD_LAZY);
     if(!handle)
     {
+        printf("Lib not loaded");
         dlerror();
     }
-
     while ((opt = getopt(argc, argv, "hg")) != -1)
     {
         switch (opt)
@@ -34,15 +34,16 @@ int main(int argc, char **argv)
             break;      
         }
     }
-
     if(fg == 1 && fh == 1)
     {
-        printLoggedUsersHostsAndGroupList = dlsym(handle, "printLoggedUsersHostsAndGroupList");
+        void (*printing)(void) = dlsym(handle, "printLoggedUsersHostsAndGroupList");
+        printing();
         dlclose(handle);
     }
     else if(fh == 1)
     {
-        printLoggedUsersAndHost= dlsym(handle, "printLoggedUsersAndHost");
+        void (*printing)(void)= dlsym(handle, "printLoggedUsersAndHost");
+        printing();
         dlclose(handle);
     }
     else if(fg == 1)
@@ -74,8 +75,8 @@ int main(int argc, char **argv)
     }
     else
     {
-
-        printLoggedUsers = dlsym(handle, printLoggedUsers);
+        void (*printing)(void) = dlsym(handle, "printLoggedUsers");
+        printing();
         dlclose(handle);
     }
 

@@ -1,3 +1,4 @@
 extern void printLoggedUsers();
 extern void printLoggedUsersAndHost();
-extern char** getLoggedUsersAndGroupList();
+extern char** getLoggedUsersAndGroupList(struct utmpx * user);
+void printLoggedUsersHostsAndGroupList();

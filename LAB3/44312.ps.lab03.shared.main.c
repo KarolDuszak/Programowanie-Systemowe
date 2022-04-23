@@ -25,7 +25,7 @@ int main(int argc, char **argv)
 
     if(fg == 1 && fh == 1)
     {
-        printf("Tu 2 switche\n");
+        printLoggedUsersHostsAndGroupList();
     }
     else if(fh == 1)
     {

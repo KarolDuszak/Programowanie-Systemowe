@@ -79,3 +79,27 @@ char** getLoggedUsersAndGroupList(struct utmpx * user)
     free(groups);
     return(names);
 }
+
+void printLoggedUsersHostsAndGroupList()
+{
+    struct utmpx *user;
+    struct passwd * uid;
+    user = getutxent();
+    char ** grupa;
+
+    while(user)
+    {
+        if(user->ut_type == 7)
+        {
+            uid = getpwnam(user->ut_user);
+            printf("login: %s host: %s groups: ", user->ut_user, user->ut_host);
+            grupa = getLoggedUsersAndGroupList(user);
+            for(int i=0; i<sizeof(grupa)+1; i++)
+            {
+                printf(" %s,", grupa[i]);
+            }
+            printf("\n");
+        }
+        user = getutxent();
+    }
+}

@@ -3,13 +3,25 @@
 #include <pwd.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "44312.ps.lab03.shared.lib.h"
 #include <string.h>
+#include <dlfcn.h>
+
+void ( *printLoggedUsers);
+void ( *printLoggedUsersAndHost);
+char** ( *getLoggedUsersAndGroupList)(struct utmpx*);
+void ( *printLoggedUsersHostsAndGroupList);
 
 int main(int argc, char **argv)
 {
     int fh=0, fg=0;
     int opt;
+
+    void *handle = dlopen("./44312.ps.lab03.shared.lib.so.0.1", RTLD_LAZY);
+    if(!handle)
+    {
+        dlerror();
+    }
+
     while ((opt = getopt(argc, argv, "hg")) != -1)
     {
         switch (opt)
@@ -25,11 +37,13 @@ int main(int argc, char **argv)
 
     if(fg == 1 && fh == 1)
     {
-        printLoggedUsersHostsAndGroupList();
+        printLoggedUsersHostsAndGroupList = dlsym(handle, "printLoggedUsersHostsAndGroupList");
+        dlclose(handle);
     }
     else if(fh == 1)
     {
-        printLoggedUsersAndHost();
+        printLoggedUsersAndHost= dlsym(handle, "printLoggedUsersAndHost");
+        dlclose(handle);
     }
     else if(fg == 1)
     {
@@ -44,7 +58,9 @@ int main(int argc, char **argv)
             {
                 printf("User: %s Groups:", user->ut_user);
                 uid = getpwnam(user->ut_user);
+                getLoggedUsersAndGroupList = dlsym(handle, "getLoggedUsersAndGroupList");
                 grupa = getLoggedUsersAndGroupList(user);
+                dlclose(handle);
                 for(int i=0; i<sizeof(grupa)+1; i++)
                 {
                     printf(" %s,", grupa[i]);
@@ -58,7 +74,9 @@ int main(int argc, char **argv)
     }
     else
     {
-        printLoggedUsers();
+
+        printLoggedUsers = dlsym(handle, printLoggedUsers);
+        dlclose(handle);
     }
 
     return 0;

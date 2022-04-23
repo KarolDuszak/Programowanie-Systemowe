@@ -1,9 +1,9 @@
 
-outprogname : 44312.ps.lab03.shared.lib.o 44312.ps.lab03.shared.main.o
-	gcc -o outprogname 44312.ps.lab03.shared.lib.o 44312.ps.lab03.shared.main.o
+outprogname : 44312.ps.lab03.shared.main.c 44312.ps.lab03.shared.lib.so.0.1
+	gcc 44312.ps.lab03.shared.main.c -o outprogname -ldl
 
-44312.ps.lab03.shared.lib.o : 44312.ps.lab03.shared.lib.c 44312.ps.lab03.shared.lib.h
+44312.ps.lab03.shared.lib.so.0.1 : 44312.ps.lab03.shared.lib.o
+	gcc -shared -fPIC 44312.ps.lab03.shared.lib.o -o 44312.ps.lab03.shared.lib.so.0.1
+
+44312.ps.lab03.shared.lib.o : 44312.ps.lab03.shared.lib.c
 	gcc -c 44312.ps.lab03.shared.lib.c
-
-44312.ps.lab03.shared.main.o : 44312.ps.lab03.shared.main.c 44312.ps.lab03.shared.lib.h
-	gcc -c 44312.ps.lab03.shared.main.c

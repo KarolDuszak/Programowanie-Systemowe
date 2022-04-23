@@ -39,7 +39,7 @@ void printLoggedUsersAndHost()
     }
 }
 
-char** getLoggedUsersAndGroupList(struct utmpx * user)
+char** getLoggedUsersAndGroupList(struct utmpx * user, int* count)
 {
     struct passwd * uid;
     int ngroups=50;
@@ -62,7 +62,7 @@ char** getLoggedUsersAndGroupList(struct utmpx * user)
             size++;
         }
     }
-
+    *count = size;
     names = malloc(sizeof(char*)*size);
 
     int j=0;
@@ -93,8 +93,9 @@ void printLoggedUsersHostsAndGroupList()
         {
             uid = getpwnam(user->ut_user);
             printf("login: %s host: %s groups: ", user->ut_user, user->ut_host);
-            grupa = getLoggedUsersAndGroupList(user);
-            for(int i=0; i<sizeof(grupa)+1; i++)
+            int numOfGroups =0;
+            grupa = getLoggedUsersAndGroupList(user, &numOfGroups);
+            for(int i=0; i<numOfGroups; i++)
             {
                 printf(" %s,", grupa[i]);
             }

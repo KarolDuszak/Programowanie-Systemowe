@@ -40,19 +40,102 @@ int main(int argc, char **argv)
     }
     if(fg == 1 && fh == 1)
     {
-        void (*printing)(void) = dlsym(handle, "printLoggedUsersHostsAndGroupList");
-        printing();
-        dlclose(handle);
+        if(!handle)
+        {
+            printf("Lib not found");
+            struct utmpx *user;
+            struct passwd * uid;
+            user = getutxent();
+
+            while(user)
+            {
+                if(user->ut_type == 7)
+                {
+                    uid = getpwnam(user->ut_user);
+                    printf("login: %s \n", user->ut_user);
+                }
+                user = getutxent();
+            }
+        }
+        else{
+            void (*printing)(void) = dlsym(handle, "printLoggedUsersHostsAndGroupList");
+            printing();
+            dlclose(handle);
+        }
     }
     else if(fh == 1)
     {
-        void (*printing)(void)= dlsym(handle, "printLoggedUsersAndHost");
-        printing();
-        dlclose(handle);
+        if(!handle)
+        {
+            printf("Lib not found");
+            struct utmpx *user;
+            struct passwd * uid;
+            user = getutxent();
+
+            while(user)
+            {
+                if(user->ut_type == 7)
+                {
+                    uid = getpwnam(user->ut_user);
+                    printf("login: %s \n", user->ut_user);
+                }
+                user = getutxent();
+            }
+        }
+        else{
+            void (*printing)(void)= dlsym(handle, "printLoggedUsersAndHost");
+            printing();
+            dlclose(handle);
+        }
     }
     else if(fg == 1)
     {
-        char ** grupa;
+        if(!handle)
+        {
+            printf("Lib not found");
+            struct utmpx *user;
+            struct passwd * uid;
+            user = getutxent();
+
+            while(user)
+            {
+                if(user->ut_type == 7)
+                {
+                    uid = getpwnam(user->ut_user);
+                    printf("login: %s \n", user->ut_user);
+                }
+                user = getutxent();
+            }
+        }
+        else{
+            char ** grupa;
+            struct utmpx *user;
+            struct passwd * uid;
+            user = getutxent();
+
+            while(user)
+            {   
+                if(user->ut_type == 7)
+                {
+                    printf("User: %s Groups:", user->ut_user);
+                    uid = getpwnam(user->ut_user);
+                    getLoggedUsersAndGroupList = dlsym(handle, "getLoggedUsersAndGroupList");
+                    int numOfGroups = 0;
+                    grupa = getLoggedUsersAndGroupList(user, &numOfGroups);
+                    dlclose(handle);
+                    for(int i=0; i<numOfGroups; i++)
+                    {
+                        printf(" %s,", grupa[i]);
+                    }
+                    printf("\n");
+                }
+                user = getutxent();
+            }
+        free(grupa);
+        }
+    }
+    else
+    {
         struct utmpx *user;
         struct passwd * uid;
         user = getutxent();
@@ -61,28 +144,11 @@ int main(int argc, char **argv)
         {
             if(user->ut_type == 7)
             {
-                printf("User: %s Groups:", user->ut_user);
                 uid = getpwnam(user->ut_user);
-                getLoggedUsersAndGroupList = dlsym(handle, "getLoggedUsersAndGroupList");
-                int numOfGroups = 0;
-                grupa = getLoggedUsersAndGroupList(user, &numOfGroups);
-                dlclose(handle);
-                for(int i=0; i<numOfGroups; i++)
-                {
-                    printf(" %s,", grupa[i]);
-                }
-                printf("\n");
+                printf("login: %s \n", user->ut_user);
             }
             user = getutxent();
         }
-        free(grupa);
-        
-    }
-    else
-    {
-        void (*printing)(void) = dlsym(handle, "printLoggedUsers");
-        printing();
-        dlclose(handle);
     }
 
     return 0;

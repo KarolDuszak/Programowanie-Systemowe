@@ -1,3 +1,7 @@
+// PS IN1 320 LAB03
+// Karol Duszak
+// dk44312@zut.edu.pl
+
 #include <stdio.h>
 #include <utmpx.h>
 #include <pwd.h>
@@ -95,7 +99,7 @@ void printLoggedUsersHostsAndGroupList()
             int numOfGroups = 0;
             printf("login: %s host: %s groups: ", user->ut_user, user->ut_host);
             grupa = getLoggedUsersAndGroupList(user, &numOfGroups);
-            for(int i=0; i<sizeof(grupa)+1; i++)
+            for(int i=0; i<numOfGroups; i++)
             {
                 printf(" %s,", grupa[i]);
             }

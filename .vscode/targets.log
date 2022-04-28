@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sat Apr  9 13:34:00 2022
+# Make data base, printed on Thu Apr 28 18:24:10 2022
 
 # Variables
 
@@ -43,15 +43,15 @@ GDMSESSION = ubuntu
 # environment
 XMODIFIERS = @im=ibus
 # makefile
-CURDIR := /home/dk44312/Programowanie-Systemowe/Programowanie-Systemowe
+CURDIR := /home/dk44312/Desktop/PS/Programowanie-Systemowe
 # makefile
 SHELL = /bin/sh
 # environment
-SNAP_DATA = /var/snap/code/93
+SNAP_DATA = /var/snap/code/94
 # environment
 VSCODE_NLS_CONFIG = {"locale":"en-us","availableLanguages":{},"_languagePackSupport":true}
 # environment
-JOURNAL_STREAM = 8:35196
+JOURNAL_STREAM = 8:33782
 # environment
 XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
 # environment
@@ -71,13 +71,13 @@ MAKELEVEL := 0
 # environment
 XDG_DATA_DIRS = /usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop
 # environment
-DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
+DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus,guid=f16e34e53eec8cdc5a2a9700626abd17
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-_ = /snap/code/93/usr/share/code/code
+_ = /snap/code/94/usr/share/code/code
 # environment
-MANAGERPID = 1242
+MANAGERPID = 1248
 # environment
 LESSOPEN = | /usr/bin/lesspipe %s
 # environment
@@ -85,7 +85,7 @@ LC_NAME = pl_PL.UTF-8
 # environment
 VSCODE_CWD = /home/dk44312
 # environment
-GSETTINGS_SCHEMA_DIR = /snap/code/93/usr/share/glib-2.0/schemas
+GSETTINGS_SCHEMA_DIR = /snap/code/94/usr/share/glib-2.0/schemas
 # default
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
@@ -93,15 +93,15 @@ PATH = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
-SESSION_MANAGER = local/dk44312-VirtualBox:@/tmp/.ICE-unix/1472,unix/dk44312-VirtualBox:/tmp/.ICE-unix/1472
+SESSION_MANAGER = local/dk44312-VirtualBox:@/tmp/.ICE-unix/1471,unix/dk44312-VirtualBox:/tmp/.ICE-unix/1471
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
 GDK_PIXBUF_MODULE_FILE = /home/dk44312/snap/code/common/.cache/gdk-pixbuf-loaders.cache
 # environment
-SNAP = /snap/code/93
+SNAP = /snap/code/94
 # environment
-SNAP_VERSION = 8dfae7a5
+SNAP_VERSION = dfd34e82
 # environment
 XDG_MENU_PREFIX = gnome-
 # environment
@@ -111,9 +111,9 @@ DISABLE_WAYLAND = 1
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-INVOCATION_ID = 7d977dd04dd64f2dbc80951a034cdf2c
+INVOCATION_ID = 09ab2505fcfa477b9bbbc911c77cf6d3
 # environment
-GDK_PIXBUF_MODULEDIR = /snap/code/93/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders
+GDK_PIXBUF_MODULEDIR = /snap/code/94/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
@@ -123,7 +123,7 @@ XDG_SESSION_DESKTOP = ubuntu
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 2295
+GIO_LAUNCHED_DESKTOP_FILE_PID = 3626
 # automatic
 %F = $(notdir $%)
 # environment
@@ -133,11 +133,11 @@ VSCODE_PIPE_LOGGING = true
 # environment
 SNAP_INSTANCE_KEY = 
 # environment
-PWD = /home/dk44312/Programowanie-Systemowe/Programowanie-Systemowe
+PWD = /home/dk44312/Desktop/PS/Programowanie-Systemowe
 # default
 .LOADED := 
 # environment
-SSH_AGENT_PID = 1417
+SSH_AGENT_PID = 1416
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -151,11 +151,11 @@ LESSCLOSE = /usr/bin/lesspipe %s %s
 # environment
 VSCODE_CLI = 1
 # environment
-VSCODE_CODE_CACHE_PATH = /home/dk44312/.config/Code/CachedData/8dfae7a5cd50421d10cd99cb873990460525a898
+VSCODE_CODE_CACHE_PATH = /home/dk44312/.config/Code/CachedData/dfd34e8260c270da74b5c2d86d61aee4b6d56977
 # environment
 LOGNAME = dk44312
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
 # environment
 SNAP_LIBRARY_PATH = /var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd/void
 # environment
@@ -183,19 +183,19 @@ MAKECMDGOALS := all
 # environment
 QT_IM_MODULE = ibus
 # environment
-SNAP_USER_DATA = /home/dk44312/snap/code/93
+SNAP_USER_DATA = /home/dk44312/snap/code/94
 # environment
 SHLVL = 0
 # environment
 GNOME_SHELL_SESSION_MODE = ubuntu
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-9718b157-5c95-48a5-9a1d-8b738ceb9954.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-75595100-eb18-4f19-abc7-5e45962b6301.sock
 # default
 MAKE_VERSION := 4.2.1
 # environment
 USER = dk44312
 # environment
-SNAP_REVISION = 93
+SNAP_REVISION = 94
 # environment
 LC_MONETARY = pl_PL.UTF-8
 # makefile
@@ -213,7 +213,7 @@ MAKE_COMMAND := make
 # automatic
 *F = $(notdir $*)
 # environment
-VSCODE_IPC_HOOK = /run/user/1000/vscode-39838d4a-1.66.1-main.sock
+VSCODE_IPC_HOOK = /run/user/1000/vscode-39838d4a-1.66.2-main.sock
 # environment
 BAMF_DESKTOP_FILE_HINT = /var/lib/snapd/desktop/applications/code_code.desktop
 # makefile
@@ -228,8 +228,6 @@ MFLAGS = -pqrR
 GDK_BACKEND = x11
 # environment
 LC_PAPER = pl_PL.UTF-8
-# environment
-LC_IDENTIFICATION = pl_PL.UTF-8
 # environment
 QT_ACCESSIBILITY = 1
 # default
@@ -247,7 +245,7 @@ SNAP_NAME = code
 # environment
 LC_ALL = C
 # environment
-GJS_DEBUG_TOPICS = JS ERROR;JS LOG
+DBUS_STARTER_BUS_TYPE = session
 # automatic
 ^F = $(notdir $^)
 # default
@@ -261,7 +259,7 @@ WINDOWPATH = 2
 # default
 .INCLUDE_DIRS = /usr/include /usr/local/include /usr/include
 # environment
-GJS_DEBUG_OUTPUT = stderr
+LC_IDENTIFICATION = pl_PL.UTF-8
 # default
 .RECIPEPREFIX := 
 # environment
@@ -269,9 +267,11 @@ LC_ADDRESS = pl_PL.UTF-8
 # environment
 LANG = C
 # environment
-VSCODE_PID = 2349
+VSCODE_PID = 3679
+# environment
+DBUS_STARTER_ADDRESS = unix:path=/run/user/1000/bus,guid=f16e34e53eec8cdc5a2a9700626abd17
 # variable set hash-table stats:
-# Load=129/1024=13%, Rehash=0, Collisions=23/151=15%
+# Load=129/1024=13%, Rehash=0, Collisions=22/151=15%
 
 # Pattern-specific Variable Values
 
@@ -279,10 +279,10 @@ VSCODE_PID = 2349
 
 # Directories
 
-# . (device 2053, inode 5169): 6 files, no impossibilities.
+# . (device 2053, inode 670459): 8 files, no impossibilities.
 
  
-# 6 files, no impossibilities in 1 directories.
+# 8 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -332,12 +332,12 @@ GNUmakefile:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 14 / storage = 113 B / avg = 8 B
-# current buf: size = 8162 B / used = 113 B / count = 14 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 16 / storage = 123 B / avg = 7 B
+# current buf: size = 8162 B / used = 123 B / count = 16 / avg = 7 B
 
-# strcache performance: lookups = 17 / hit rate = 17%
+# strcache performance: lookups = 19 / hit rate = 15%
 # hash-table stats:
-# Load=14/8192=0%, Rehash=0, Collisions=1/17=6%
-# Finished Make data base on Sat Apr  9 13:34:00 2022
+# Load=16/8192=0%, Rehash=0, Collisions=1/19=5%
+# Finished Make data base on Thu Apr 28 18:24:10 2022
 
  

@@ -6,6 +6,10 @@
 #include <string.h>
 #include <ctype.h>
 
+struct customTimer{
+
+};
+
 
 int isNumber(char *number)
 {
@@ -54,8 +58,16 @@ int main(int argc, char **argv)
             char* tvalue = optarg;
             numOfRuns = strtol(tvalue, NULL, 10);
             break;      
+        case '?':
+            // To nie dziala jak przechwycic to co jest po switchach?
+            char* qMark = optarg;
+            printf("Question Mark opt: %s\n", qMark);
+            break;
         }
+            
     }
+
+
     printf("fV: %d, number of runs: %ld\n", fv, numOfRuns);
     return 0;
 }

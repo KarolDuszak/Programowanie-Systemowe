@@ -6,39 +6,6 @@
 #include <string.h>
 #include <ctype.h>
 
-int main(int argc, char **argv)
-{
-    int fv=0, ft=0;
-    int opt;
-
-    for(int i=0; i< argc ; i++)
-    {
-        printf("%s \n", argv[i]);
-    }
-    while ((opt = getopt(argc, argv, "+vt:")) != -1)
-    {
-        //char x = opt;
-        //printf("%c \n",x);
-        switch (opt)
-        {
-        case 'v':
-            fv = 1;
-            printf("flaga v");
-            break;
-        case 't':
-        //Konwersja na int ze stringa
-    
-            ft = 1;
-            char* tvalue = optarg;
-            long tNumber = strtol(tvalue, NULL, 10);
-
-            tNumber = tNumber +1;
-            printf("flaga t %s %ld", tvalue, tNumber);
-            break;      
-        }
-    }
-    return 0;
-}
 
 int isNumber(char *number)
 {
@@ -48,8 +15,47 @@ int isNumber(char *number)
     {
         if(!isdigit(number[i]))
         {
+            if(number[i] == 0)
+            {
+                break; //When it is null then all passed params were checked
+            }
+            //printf("This is not a digit: %d\n", number[i]);
             return 0;
         }
+        //printf("This is a digit %c\n", number[i]);
     }
     return 1;
+}
+
+int main(int argc, char **argv)
+{
+    int fv=0;
+    long numOfRuns = 1;
+    int opt;
+
+    for(int i=0; i< argc ; i++)
+    {
+        printf("%s \n", argv[i]);
+    }
+    while ((opt = getopt(argc, argv, "+vt:")) != -1)
+    {
+        switch (opt)
+        {
+        case 'v':
+            fv = 1;
+            break;
+        case 't':
+        //Konwersja na int ze stringa
+            if(isNumber(optarg)==0)
+            {
+                printf("Passed value for switch t is not a number: %s closing program\n", optarg);
+                exit(1);
+            }
+            char* tvalue = optarg;
+            numOfRuns = strtol(tvalue, NULL, 10);
+            break;      
+        }
+    }
+    printf("fV: %d, number of runs: %ld\n", fv, numOfRuns);
+    return 0;
 }

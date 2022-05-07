@@ -31,11 +31,18 @@ int isNumber(char *number)
     return 1;
 }
 
+void saveFilesPathAndSwitches(int *filePath, int *filesSwitches, int startIndex, char* args)
+{
+
+}
+
 int main(int argc, char **argv)
 {
     int fv=0;
     long numOfRuns = 1;
-    int opt;
+    int opt, lastArgIndex;
+    char *pathToFile;
+    char **filesSwitches;
 
     for(int i=0; i< argc ; i++)
     {
@@ -47,6 +54,7 @@ int main(int argc, char **argv)
         {
         case 'v':
             fv = 1;
+            lastArgIndex = optind;
             break;
         case 't':
         //Konwersja na int ze stringa
@@ -57,15 +65,13 @@ int main(int argc, char **argv)
             }
             char* tvalue = optarg;
             numOfRuns = strtol(tvalue, NULL, 10);
-            break;      
-        case '?':
-            // To nie dziala jak przechwycic to co jest po switchach?
-            char* qMark = optarg;
-            printf("Question Mark opt: %s\n", qMark);
+            lastArgIndex = optind;
             break;
         }
-            
     }
+
+    printf("Question Mark opt: %d\n", lastArgIndex);
+    printf("index last opt: %s\n", argv[lastArgIndex]);
 
 
     printf("fV: %d, number of runs: %ld\n", fv, numOfRuns);

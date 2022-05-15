@@ -42,13 +42,12 @@ struct externalProgramParams saveFilesPathAndSwitches(int argc, int startOptInde
     int i = startOptIndex+1;
     int j = 0;
     char** options = malloc((argc - startOptIndex)*sizeof(char*));
-    strcpy(params.filePath, argv[startOptIndex]);
-
+    params.filePath = argv[startOptIndex];
     params.opts = malloc(sizeof(char*)*25);
 
     while(argv[i])
     {
-        strcpy(params.opts[j],argv[i]);
+        params.opts[j] = argv[i];
         i++;
         j++;
     }
@@ -93,7 +92,7 @@ int main(int argc, char **argv)
 
     printf("Position of last opt: %d\n", lastArgIndex);
     printf("Value on index: %s\n", argv[lastArgIndex]);
-    
+
     struct externalProgramParams params = saveFilesPathAndSwitches(argc, lastArgIndex, argv);
     printf("FilePath: %s, Opt1 %s, Opt2 %s\n", params.filePath, params.opts[0],params.opts[1]);
     printf("fV: %d, number of runs: %ld\n", fv, numOfRuns);

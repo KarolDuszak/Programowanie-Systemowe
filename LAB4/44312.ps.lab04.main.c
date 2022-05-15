@@ -57,6 +57,19 @@ struct externalProgramParams saveFilesPathAndSwitches(int argc, int startOptInde
     return params;
 }
 
+void runProgram(struct externalProgramParams programParams)
+{
+    char command[100] = "";
+    strcat(command, programParams.filePath);
+    for(int i = 0; i<programParams.numberOfOpts; i++)
+    {
+        strcat(command, " ");
+        strcat(command, programParams.opts[i]);
+    }
+    printf("%s\n", command);
+    //int status = system()
+}
+
 int main(int argc, char **argv)
 {
     int fv=0;
@@ -95,5 +108,6 @@ int main(int argc, char **argv)
 
     struct externalProgramParams params = saveFilesPathAndSwitches(argc, lastArgIndex, argv);
 
+    runProgram(params);
     return 0;
 }

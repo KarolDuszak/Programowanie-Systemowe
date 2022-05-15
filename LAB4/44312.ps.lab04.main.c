@@ -5,6 +5,8 @@
 #include <unistd.h>
 #include <string.h>
 #include <ctype.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 struct customTimer{
 
@@ -57,7 +59,7 @@ struct externalProgramParams saveFilesPathAndSwitches(int argc, int startOptInde
     return params;
 }
 
-void runProgram(struct externalProgramParams programParams)
+void runProgram(struct externalProgramParams programParams, int flagV)
 {
     char command[100] = "";
     strcat(command, programParams.filePath);
@@ -66,8 +68,16 @@ void runProgram(struct externalProgramParams programParams)
         strcat(command, " ");
         strcat(command, programParams.opts[i]);
     }
-    printf("%s\n", command);
-    //int status = system()
+    printf("Starting program with command: %s\n", command);
+
+    if(flagV == 0)
+    {
+        int d = open("/dev/null", O_WRONLY);
+        dup2(d,1);
+    }
+    
+    int result = system(command);
+
 }
 
 int main(int argc, char **argv)
@@ -108,6 +118,6 @@ int main(int argc, char **argv)
 
     struct externalProgramParams params = saveFilesPathAndSwitches(argc, lastArgIndex, argv);
 
-    runProgram(params);
+    runProgram(params, fv);
     return 0;
 }

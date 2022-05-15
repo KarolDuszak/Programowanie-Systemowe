@@ -10,6 +10,11 @@ struct customTimer{
 
 };
 
+struct externalProgramParams{
+    char* filePath;
+    char** opts;
+};
+
 
 int isNumber(char *number)
 {
@@ -31,9 +36,23 @@ int isNumber(char *number)
     return 1;
 }
 
-void saveFilesPathAndSwitches(int *filePath, int *filesSwitches, int startIndex, char* args)
+struct externalProgramParams saveFilesPathAndSwitches(int argc, int startOptIndex, char** argv)
 {
+    struct externalProgramParams params;
+    int i = startOptIndex+1;
+    int j = 0;
+    char** options = malloc((argc - startOptIndex)*sizeof(char*));
+    strcpy(params.filePath, argv[startOptIndex]);
 
+    params.opts = malloc(sizeof(char*)*25);
+
+    while(argv[i])
+    {
+        strcpy(params.opts[j],argv[i]);
+        i++;
+        j++;
+    }
+    return params;
 }
 
 int main(int argc, char **argv)
@@ -44,10 +63,12 @@ int main(int argc, char **argv)
     char *pathToFile;
     char **filesSwitches;
 
+    //Printing order of argstemp implementation
     for(int i=0; i< argc ; i++)
     {
         printf("%s \n", argv[i]);
     }
+
     while ((opt = getopt(argc, argv, "+vt:")) != -1)
     {
         switch (opt)
@@ -70,10 +91,11 @@ int main(int argc, char **argv)
         }
     }
 
-    printf("Question Mark opt: %d\n", lastArgIndex);
-    printf("index last opt: %s\n", argv[lastArgIndex]);
-
-
+    printf("Position of last opt: %d\n", lastArgIndex);
+    printf("Value on index: %s\n", argv[lastArgIndex]);
+    
+    struct externalProgramParams params = saveFilesPathAndSwitches(argc, lastArgIndex, argv);
+    printf("FilePath: %s, Opt1 %s, Opt2 %s\n", params.filePath, params.opts[0],params.opts[1]);
     printf("fV: %d, number of runs: %ld\n", fv, numOfRuns);
     return 0;
 }

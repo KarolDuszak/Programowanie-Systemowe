@@ -14,8 +14,8 @@
 
 struct customTimer{
     long real;
-    double user;
-    double system;
+    long user;
+    long system;
 };
 
 struct externalProgramParams{
@@ -82,13 +82,14 @@ void runProgram(struct externalProgramParams programParams, int flagV, struct cu
 {
     //char* command = buildCommand(programParams);
     //printf("Starting program with command: %s\n", command);
-
-    if(flagV == 0)
+    int savedStdOut;
+    if(flagV == 1)
     {
-        int d = open("/dev/null", O_WRONLY);
-        dup2(d,1);
+        savedStdOut=dup(1);
+        close(1);
+        int h = open("/dev/null", O_WRONLY);
+        dup2(h,1);
     }
-    char *env[]={NULL};
     //int result = system(command);
 
     pid_t pid;
@@ -105,16 +106,24 @@ void runProgram(struct externalProgramParams programParams, int flagV, struct cu
     }
     else
     {
-        printf("\n pid: %d ppid: %d \n", getpid(), getppid());
+        //printf("\n pid: %d ppid: %d \n", getpid(), getppid());
         clock_gettime(CLOCK_REALTIME, &requestStart);
         wait4(pid, &wstatus, 0, rusage);
         clock_gettime(CLOCK_REALTIME, &requestEnd);
         timer->real += (requestEnd.tv_sec-requestStart.tv_sec) *1000000000 + (requestEnd.tv_nsec - requestStart.tv_nsec);
-        
+        timer->system += rusage->ru_stime.tv_sec*1000000 + rusage->ru_stime.tv_usec;
+        timer->user += rusage->ru_utime.tv_sec*1000000 + rusage->ru_utime.tv_usec;
         printf("Real Time: %ld ns \n", timer->real);
         printf("System Time: %ld us \n", rusage->ru_stime.tv_sec*1000000 + rusage->ru_stime.tv_usec);
         printf("User Time: %ld us \n", rusage->ru_utime.tv_sec*1000000 + rusage->ru_utime.tv_usec);
         printf("End Of Program %s \n\n", programParams.filePath);
+
+
+        if(flagV==1)
+        {
+            close(1);
+            dup2(savedStdOut,1);
+        }
     }
 
 
@@ -131,12 +140,6 @@ int main(int argc, char **argv)
     timer.real=0;
     timer.system=0;
     timer.user=0;
-
-    //Printing order of argstemp implementation
-    for(int i=0; i< argc ; i++)
-    {
-        printf("%s \n", argv[i]);
-    }
 
     while ((opt = getopt(argc, argv, "+vt:")) != -1)
     {
@@ -161,7 +164,15 @@ int main(int argc, char **argv)
     }
 
     struct externalProgramParams params = saveFilesPathAndSwitches(argc, lastArgIndex, argv);
+    for(int i=0; i< numOfRuns; i++)
+    {
+        runProgram(params, fv, &timer);
+    }
 
-    runProgram(params, fv, &timer);
+    printf("Average Real execution time: %ld ns\n", timer.real/numOfRuns);
+    printf("Average time in system space: %ld us\n", timer.system/numOfRuns);
+    printf("Average time in user space: %ld us\n", timer.user/numOfRuns);
+
+
     return 0;
 }

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <utmpx.h>
 #include <pwd.h>
+#include <unistd.h>
 
 int main(void)
 {
@@ -17,6 +18,7 @@ int main(void)
         }
         a = getutxent();
     }
+    printf("\n %d %d \n", getpid(), getppid());
 
     return 0;
 }

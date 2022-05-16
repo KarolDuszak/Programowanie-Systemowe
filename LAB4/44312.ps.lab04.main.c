@@ -7,9 +7,14 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <time.h>
+#include <sys/wait.h>
+
 
 struct customTimer{
-
+    double realAvg;
+    double userAvg;
+    double systemAvg;
 };
 
 struct externalProgramParams{
@@ -84,7 +89,24 @@ void runProgram(struct externalProgramParams programParams, int flagV)
     }
     char *env[]={NULL};
     //int result = system(command);
-    execve(programParams.filePath, programParams.opts, env);
+
+    pid_t pid;
+    struct timespec requestStart, requestEnd;
+
+    if((pid = fork()) == -1)
+        perror("fork error");
+    else if (pid == 0)
+    {
+        execve(programParams.filePath, programParams.opts, NULL);
+        printf("Return not expected.");
+    }
+    else
+    {
+        printf("\n pid: %d ppid: %d \n", getpid(), getppid());
+        clock_gettime(CLOCK_REALTIME, &requestStart);
+        wait4()
+    }
+
 
 }
 

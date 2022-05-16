@@ -9,12 +9,13 @@
 #include <fcntl.h>
 #include <time.h>
 #include <sys/wait.h>
+#include <sys/resource.h>
 
 
 struct customTimer{
-    double realAvg;
-    double userAvg;
-    double systemAvg;
+    long real;
+    double user;
+    double system;
 };
 
 struct externalProgramParams{
@@ -77,7 +78,7 @@ char* buildCommand(struct externalProgramParams programParams)
     return command;
 }
 
-void runProgram(struct externalProgramParams programParams, int flagV)
+void runProgram(struct externalProgramParams programParams, int flagV, struct customTimer * timer)
 {
     //char* command = buildCommand(programParams);
     //printf("Starting program with command: %s\n", command);
@@ -92,6 +93,8 @@ void runProgram(struct externalProgramParams programParams, int flagV)
 
     pid_t pid;
     struct timespec requestStart, requestEnd;
+    int wstatus;
+    struct rusage* rusage = malloc(sizeof(struct rusage));
 
     if((pid = fork()) == -1)
         perror("fork error");
@@ -104,7 +107,14 @@ void runProgram(struct externalProgramParams programParams, int flagV)
     {
         printf("\n pid: %d ppid: %d \n", getpid(), getppid());
         clock_gettime(CLOCK_REALTIME, &requestStart);
-        wait4()
+        wait4(pid, &wstatus, 0, rusage);
+        clock_gettime(CLOCK_REALTIME, &requestEnd);
+        timer->real += (requestEnd.tv_sec-requestStart.tv_sec) *1000000000 + (requestEnd.tv_nsec - requestStart.tv_nsec);
+        
+        printf("Real Time: %ld ns \n", timer->real);
+        printf("System Time: %ld us \n", rusage->ru_stime.tv_sec*1000000 + rusage->ru_stime.tv_usec);
+        printf("User Time: %ld us \n", rusage->ru_utime.tv_sec*1000000 + rusage->ru_utime.tv_usec);
+        printf("End Of Program %s \n\n", programParams.filePath);
     }
 
 
@@ -117,6 +127,10 @@ int main(int argc, char **argv)
     int opt, lastArgIndex;
     char *pathToFile;
     char **filesSwitches;
+    struct customTimer timer;
+    timer.real=0;
+    timer.system=0;
+    timer.user=0;
 
     //Printing order of argstemp implementation
     for(int i=0; i< argc ; i++)
@@ -148,6 +162,6 @@ int main(int argc, char **argv)
 
     struct externalProgramParams params = saveFilesPathAndSwitches(argc, lastArgIndex, argv);
 
-    runProgram(params, fv);
+    runProgram(params, fv, &timer);
     return 0;
 }

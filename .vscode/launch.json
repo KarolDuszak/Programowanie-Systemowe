@@ -5,14 +5,12 @@
       "name": "(gdb) Launch",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/LAB4/a.out",
+      "program": "${workspaceFolder}/LAB5/a.out",
       "args": [
-        "-v",
-        "-t",
-        "20",
-        "./testprog",
-        "-s",
-        "-u"
+        "-l",
+        "10",
+        "-c",
+        "10"
       ],
       "stopAtEntry": false,
       "cwd": "${fileDirname}",

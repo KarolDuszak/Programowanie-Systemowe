@@ -26,6 +26,19 @@ int isNumber(char *number)
     return 1;
 }
 
+int calculateFactorial()
+{
+    long result=1;
+    int value =1;
+
+    while(1)
+    {
+        result = result * value;
+        value++;
+    }
+    printf("Result: %ld", result);
+}
+
 int main(int argc, char** argv)
 {
     //l <- subprocess life time
@@ -59,6 +72,6 @@ int main(int argc, char** argv)
     }
 
     printf("Lifetime: %d Creation time: %d\n", maxLifeTime, timeToCreate);
-
+    calculateFactorial();
     return 0;
 }

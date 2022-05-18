@@ -94,10 +94,12 @@ int generateSubprocesses(int maxLifeTime)
 
     if(pid == 0)
     {
-        signal(SIGINT, SIG_IGN);
+        //signal(SIGINT, SIG_IGN);
         signal(SIGALRM, sig_kill_child_proces);
         alarm(lifeTime);
         calculateFactorial();
+        CHILD_COUNTER--;
+        printf("lifetime: %d\n", lifeTime);
         return lifeTime;
     }
     else if(pid < 0)
@@ -154,7 +156,6 @@ int main(int argc, char** argv)
         if(procesType !=0)
         {
             printf("Calculations were made for: %ds\n", procesType);
-            CHILD_COUNTER--;
         }
         sleep(timeToCreate);
     }

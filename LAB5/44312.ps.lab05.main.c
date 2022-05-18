@@ -8,7 +8,9 @@
 #include <time.h>
 #include <signal.h>
 
-int LIFE_TIME =0;
+int LIFE_TIME = 0;
+int KEEP_CREATING_NEW_CHILD = 1;
+int CHILD_COUNTER = 0;
 
 int isNumber(char *number)
 {
@@ -43,7 +45,7 @@ int calculateFactorial()
             result=1;
         }
     }
-    printf("Result: %ld", result);
+    //printf("Result: %ld", result);
 }
 
 int randomCalculationTime(int max)
@@ -52,12 +54,19 @@ int randomCalculationTime(int max)
     int result = rand()%max+1;
     return result;
 }
+int isAnyChildActive()
+{
+    if(CHILD_COUNTER == 0)
+    {
+        return 0;
+    }
+    return 1;
+}
 
 void sig_kill_child_proces(int signum)
 {
     if(signum == SIGALRM)
     {
-        //jak przekazac lifeTime tutaj?
         _exit(LIFE_TIME);
     }
 }
@@ -72,14 +81,34 @@ void sig_generate_Subprocess(int maxLifeTime)
 
 void sig_action_handler(int no, siginfo_t *info, void *ucontext)
 {
-    
+    printf("\nCtrl + C was pressed\n");
+    KEEP_CREATING_NEW_CHILD=0;
 }
 
-void generateSubprocesses(int interval)
+int generateSubprocesses(int maxLifeTime)
 {
-    signal(SIGALRM, sig_handler);
-    alarm(interval);
+    int lifeTime = randomCalculationTime(maxLifeTime);
+    
+    CHILD_COUNTER++;
+    pid_t pid = fork();
 
+    if(pid == 0)
+    {
+        signal(SIGINT, SIG_IGN);
+        signal(SIGALRM, sig_kill_child_proces);
+        alarm(lifeTime);
+        calculateFactorial();
+        return lifeTime;
+    }
+    else if(pid < 0)
+    {
+        perror("fork error");
+    }
+    else{
+
+    }
+
+    return 0;
 }
 
 int main(int argc, char** argv)
@@ -90,7 +119,9 @@ int main(int argc, char** argv)
     int opt;
     struct sigaction sa;
     sa.sa_sigaction = sig_action_handler;
-
+    sigemptyset(&(sa.sa_mask));
+    sa.sa_flags=SA_SIGINFO;
+    int x = sigaction(SIGINT, &sa, NULL);
 
     while ((opt = getopt(argc, argv, "l:c:")) != -1)
     {
@@ -117,8 +148,18 @@ int main(int argc, char** argv)
         }
     }
 
-    int timeOfCalculation = randomCalculationTime(maxLifeTime);
+    while(KEEP_CREATING_NEW_CHILD)
+    {
+        int procesType = generateSubprocesses(maxLifeTime);
+        if(procesType !=0)
+        {
+            printf("Calculations were made for: %ds\n", procesType);
+            CHILD_COUNTER--;
+        }
+        sleep(timeToCreate);
+    }
 
-    //calculateFactorial();
+    while(isAnyChildActive() == 1);
+
     return 0;
 }

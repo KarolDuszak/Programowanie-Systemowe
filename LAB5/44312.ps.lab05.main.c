@@ -5,6 +5,10 @@
 #include <unistd.h>
 #include <string.h>
 #include <ctype.h>
+#include <time.h>
+#include <signal.h>
+
+int LIFE_TIME =0;
 
 int isNumber(char *number)
 {
@@ -28,15 +32,54 @@ int isNumber(char *number)
 
 int calculateFactorial()
 {
-    long result=1;
-    int value =1;
+    unsigned long result=1;
+    unsigned int value =1;
 
     while(1)
     {
         result = result * value;
         value++;
+        if(result== 0){
+            result=1;
+        }
     }
     printf("Result: %ld", result);
+}
+
+int randomCalculationTime(int max)
+{
+    srand(time(0));
+    int result = rand()%max+1;
+    return result;
+}
+
+void sig_kill_child_proces(int signum)
+{
+    if(signum == SIGALRM)
+    {
+        //jak przekazac lifeTime tutaj?
+        _exit(LIFE_TIME);
+    }
+}
+
+void sig_generate_Subprocess(int maxLifeTime)
+{
+    LIFE_TIME = randomCalculationTime(maxLifeTime);
+    signal(SIGALRM, sig_kill_child_proces);
+    alarm(LIFE_TIME);
+
+}
+
+void sig_action_handler(int no, siginfo_t *info, void *ucontext)
+{
+    
+}
+
+void generateSubprocesses(int interval)
+{
+    signal(SIGALRM, sig_handler);
+    alarm(interval);
+
 }
 
 int main(int argc, char** argv)
@@ -45,6 +88,9 @@ int main(int argc, char** argv)
     //c <- subprocess creation time
     int timeToCreate=0, maxLifeTime=0;
     int opt;
+    struct sigaction sa;
+    sa.sa_sigaction = sig_action_handler;
+
 
     while ((opt = getopt(argc, argv, "l:c:")) != -1)
     {
@@ -71,7 +117,8 @@ int main(int argc, char** argv)
         }
     }
 
-    printf("Lifetime: %d Creation time: %d\n", maxLifeTime, timeToCreate);
-    calculateFactorial();
+    int timeOfCalculation = randomCalculationTime(maxLifeTime);
+
+    //calculateFactorial();
     return 0;
 }

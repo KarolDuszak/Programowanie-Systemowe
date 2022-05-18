@@ -82,13 +82,16 @@ void runProgram(struct externalProgramParams programParams, int flagV, struct cu
 {
     //char* command = buildCommand(programParams);
     //printf("Starting program with command: %s\n", command);
-    int savedStdOut;
+    int savedStdOut, savedStdErr;
     if(flagV == 0)
     {
         savedStdOut=dup(1);
         close(1);
+        savedStdErr =dup(2);
+        close(2);
         int h = open("/dev/null", O_WRONLY);
         dup2(h,1);
+        dup2(h,2);
     }
     //int result = system(command);
 
@@ -123,6 +126,8 @@ void runProgram(struct externalProgramParams programParams, int flagV, struct cu
         {
             close(1);
             dup2(savedStdOut,1);
+            close(2);
+            dup2(savedStdErr,2);
         }
     }
 

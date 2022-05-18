@@ -48,7 +48,7 @@ int isNumber(char *number)
 struct externalProgramParams saveFilesPathAndSwitches(int argc, int startOptIndex, char** argv)
 {
     struct externalProgramParams params;
-    int i = startOptIndex+1;
+    int i = startOptIndex;
     int j = 0;
     char** options = malloc((argc - startOptIndex)*sizeof(char*));
     params.filePath = argv[startOptIndex];
@@ -83,7 +83,7 @@ void runProgram(struct externalProgramParams programParams, int flagV, struct cu
     //char* command = buildCommand(programParams);
     //printf("Starting program with command: %s\n", command);
     int savedStdOut;
-    if(flagV == 1)
+    if(flagV == 0)
     {
         savedStdOut=dup(1);
         close(1);
@@ -101,7 +101,7 @@ void runProgram(struct externalProgramParams programParams, int flagV, struct cu
         perror("fork error");
     else if (pid == 0)
     {
-        execve(programParams.filePath, programParams.opts, NULL);
+        execve(programParams.filePath, programParams.opts,NULL);
         printf("Return not expected.");
     }
     else
@@ -119,7 +119,7 @@ void runProgram(struct externalProgramParams programParams, int flagV, struct cu
         printf("End Of Program %s \n\n", programParams.filePath);
 
 
-        if(flagV==1)
+        if(flagV==0)
         {
             close(1);
             dup2(savedStdOut,1);

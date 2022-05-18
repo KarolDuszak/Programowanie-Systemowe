@@ -173,11 +173,11 @@ int main(int argc, char **argv)
     {
         runProgram(params, fv, &timer);
     }
-
-    printf("Average Real execution time: %ld ns\n", timer.real/numOfRuns);
-    printf("Average time in system space: %ld us\n", timer.system/numOfRuns);
-    printf("Average time in user space: %ld us\n", timer.user/numOfRuns);
-
-
+    if(numOfRuns>1)
+    {
+        printf("Average Real execution time: %ld ns\n", timer.real/numOfRuns);
+        printf("Average time in system space: %ld us\n", timer.system/numOfRuns);
+        printf("Average time in user space: %ld us\n", timer.user/numOfRuns);
+    }
     return 0;
 }

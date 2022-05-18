@@ -1,3 +1,7 @@
+// PS IN1 320 LAB04
+// Karol Duszak
+// dk44312@zut.edu.pl
+
 #include <stdio.h>
 #include <utmpx.h>
 #include <pwd.h>

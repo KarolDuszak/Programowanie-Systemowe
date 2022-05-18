@@ -50,7 +50,7 @@ struct externalProgramParams saveFilesPathAndSwitches(int argc, int startOptInde
     struct externalProgramParams params;
     int i = startOptIndex;
     int j = 0;
-    char** options = malloc((argc - startOptIndex)*sizeof(char*));
+    //char** options = malloc((argc - startOptIndex)*sizeof(char*));
     params.filePath = argv[startOptIndex];
     params.opts = malloc(sizeof(char*)*25);
 
@@ -130,7 +130,7 @@ void runProgram(struct externalProgramParams programParams, int flagV, struct cu
             dup2(savedStdErr,2);
         }
     }
-
+    free(rusage);
 
 }
 
@@ -179,5 +179,6 @@ int main(int argc, char **argv)
         printf("Average time in system space: %ld us\n", timer.system/numOfRuns);
         printf("Average time in user space: %ld us\n", timer.user/numOfRuns);
     }
+    free(params.opts);
     return 0;
 }

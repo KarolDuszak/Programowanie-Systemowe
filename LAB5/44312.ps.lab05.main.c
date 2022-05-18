@@ -1,3 +1,7 @@
+// PS IN1 320 LAB05
+// Karol Duszak
+// dk44312@zut.edu.pl
+
 #include <stdio.h>
 #include <utmpx.h>
 #include <pwd.h>
@@ -54,14 +58,6 @@ int randomCalculationTime(int max)
     int result = rand()%max+1;
     return result;
 }
-int isAnyChildActive()
-{
-    if(CHILD_COUNTER == 0)
-    {
-        return 0;
-    }
-    return 1;
-}
 
 void sig_kill_child_proces(int signum)
 {
@@ -74,7 +70,6 @@ void sig_kill_child_proces(int signum)
 void sig_action_handler(int no, siginfo_t *info, void *ucontext)
 {
     printf("\nCtrl + C was pressed\n");
-    CHILD_COUNTER--;
     KEEP_CREATING_NEW_CHILD=0;
 }
 
@@ -85,10 +80,13 @@ int generateSubprocesses(int maxLifeTime)
     if(pid == 0)
     {
         LIFE_TIME = randomCalculationTime(maxLifeTime);
+        time_t now = time(NULL);
+        struct tm tm =*localtime(&now);
+        printf("[%d] [%d] [%02d/%02d/%04d %02d:%02d:%02d]\n", getpid(), LIFE_TIME, tm.tm_mday, tm.tm_mon, tm.tm_year, tm.tm_hour, tm.tm_min, tm.tm_sec);
+
         signal(SIGINT, SIG_IGN);
         signal(SIGALRM, sig_kill_child_proces);
         alarm(LIFE_TIME);
-        printf("Lifetime: %d\n", LIFE_TIME);
         calculateFactorial();
     }
     else if(pid < 0)
@@ -104,7 +102,7 @@ void sig_child_proces_finished(int no, siginfo_t *info, void *ucontext)
     time_t now = time(NULL);
     struct tm tm =*localtime(&now);
 
-    printf("[%d] [%d] [%02d/%02d/%04d %02d:%02d:%02d]\n", info->si_pid, info->si_status, tm.tm_mday, tm.tm_mon, tm.tm_year, tm.tm_hour, tm.tm_min, tm.tm_sec);
+    printf("\t\t\t\t[%d] [%d] [%02d/%02d/%04d %02d:%02d:%02d]\n", info->si_pid, info->si_status, tm.tm_mday, tm.tm_mon, tm.tm_year, tm.tm_hour, tm.tm_min, tm.tm_sec);
     CHILD_COUNTER--;
 }
 
@@ -154,16 +152,12 @@ int main(int argc, char** argv)
     while(KEEP_CREATING_NEW_CHILD)
     {
         int procesType = generateSubprocesses(maxLifeTime);
-        if(procesType !=0)
-        {
-            printf("Calculations were made for: %ds\n", procesType);
-        }
         sleep(timeToCreate);
     }
 
     while(CHILD_COUNTER != 0)
     {
-        printf("%d childs are still working", CHILD_COUNTER);
+        printf("%d childs are still working\n", CHILD_COUNTER);
         sleep(5);
     }
 

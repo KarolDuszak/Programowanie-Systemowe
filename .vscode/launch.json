@@ -8,9 +8,9 @@
       "program": "${workspaceFolder}/LAB5/a.out",
       "args": [
         "-l",
-        "10",
+        "5",
         "-c",
-        "10"
+        "3"
       ],
       "stopAtEntry": false,
       "cwd": "${fileDirname}",

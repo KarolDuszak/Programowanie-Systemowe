@@ -152,7 +152,11 @@ int main(int argc, char** argv)
     while(KEEP_CREATING_NEW_CHILD)
     {
         int procesType = generateSubprocesses(maxLifeTime);
-        sleep(timeToCreate);
+        int timeLeft = sleep(timeToCreate);
+        while(timeLeft!=0)
+        {
+            timeLeft = sleep(timeLeft);
+        }
     }
 
     while(CHILD_COUNTER != 0)

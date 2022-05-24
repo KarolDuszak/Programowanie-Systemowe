@@ -14,6 +14,11 @@
 #include "44312.ps.lab06.timer.h"
 #include <pthread.h>
 
+struct threadData{
+    pthread_t thread;
+    int lifetime;
+};
+
 int isNumber(char *number)
 {
     size_t len = sizeof(number)/sizeof(number[0]);
@@ -98,12 +103,14 @@ int main(int argc, char** argv)
         }
     }
 
-    pthread_t threads_ids[numberOfThreads];
+    struct threadData threads[numberOfThreads];
 
     for(int i=0; i<numberOfThreads;i++)
     {
-        int status = pthread_create(&threads_ids[i], NULL, printPid, NULL);
-        printf("status: %d id: %ld\n", status, threads_ids[i]);
+        int status = pthread_create(&threads[i].thread, NULL, printPid, NULL);
+        threads[i].lifetime = randomCalculationTime(maxLifeTime);
+        printf("status: %d id: %ld life time: %d\n", status, threads[i].thread, threads[i].lifetime);
+        sleep(1); //Za szybko sie tworza wiec zeby zroznicowac czasy umiescilem sleep bo wszystkie mialy taki sam czas
     }
 
     return 0;

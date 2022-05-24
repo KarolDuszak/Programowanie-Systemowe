@@ -17,6 +17,7 @@
 struct threadData{
     pthread_t thread;
     int lifetime;
+    int keepCalculating;
 };
 
 int isNumber(char *number)
@@ -62,13 +63,15 @@ int randomCalculationTime(int max)
     return result;
 }
 
-void* printPid(void* unused)
+void* executeThread(void* flag)
 {
     printf("TID: %ld\n", pthread_self());
 
-    for(int i=0 ;i<10; i++){
+    while(*(int*)flag==1)
+    {
         sleep(1);
     }
+    printf("KONIEC \n");
 }
 
 int main(int argc, char** argv)
@@ -107,11 +110,24 @@ int main(int argc, char** argv)
 
     for(int i=0; i<numberOfThreads;i++)
     {
-        int status = pthread_create(&threads[i].thread, NULL, printPid, NULL);
+        threads[i].keepCalculating=1;
+        int status = pthread_create(&threads[i].thread, NULL, executeThread, &threads[i].keepCalculating);
         threads[i].lifetime = randomCalculationTime(maxLifeTime);
         printf("status: %d id: %ld life time: %d\n", status, threads[i].thread, threads[i].lifetime);
         sleep(1); //Za szybko sie tworza wiec zeby zroznicowac czasy umiescilem sleep bo wszystkie mialy taki sam czas
     }
+
+
+    // Teraz to musi by wywolywane przez sygnal
+    // trzeba mu przekazac jakos ta strukture
+    // przy tworzeniu zeby set alarm a jak alarm sie odpali to zabic ten proces
+    // mozna przekazac id np lub wskaznik i wtedy go zabic
+    
+    // moze trzymac ilosc aktywynych watkow zeby program zakonczyc dopiero jak
+    // wszystkie zostana ubite?
+    sleep(5);
+    threads[0].keepCalculating=0;
+    sleep(10);
 
     return 0;
 }

@@ -59,7 +59,7 @@ int randomCalculationTime(int max)
 
 void* printPid(void* unused)
 {
-    printf("PID: %d\n", getpid());
+    printf("TID: %ld\n", pthread_self());
 
     for(int i=0 ;i<10; i++){
         sleep(1);
@@ -103,7 +103,7 @@ int main(int argc, char** argv)
     for(int i=0; i<numberOfThreads;i++)
     {
         int status = pthread_create(&threads_ids[i], NULL, printPid, NULL);
-        printf("status: %d id: %ld pid: %d\n", status, threads_ids[i], getpid());
+        printf("status: %d id: %ld\n", status, threads_ids[i]);
     }
 
     return 0;

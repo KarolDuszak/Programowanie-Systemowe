@@ -1,4 +1,4 @@
-// PS IN1 320 LAB05
+// PS IN1 320 LAB06
 // Karol Duszak
 // dk44312@zut.edu.pl
 
@@ -11,10 +11,8 @@
 #include <ctype.h>
 #include <time.h>
 #include <signal.h>
-
-int LIFE_TIME = 0;
-int KEEP_CREATING_NEW_CHILD = 1;
-int CHILD_COUNTER = 0;
+#include "44312.ps.lab06.timer.h"
+#include <pthread.h>
 
 int isNumber(char *number)
 {
@@ -59,51 +57,13 @@ int randomCalculationTime(int max)
     return result;
 }
 
-void sig_kill_child_proces(int signum)
+void* printPid(void* unused)
 {
-    if(signum == SIGALRM)
-    {
-        _exit(LIFE_TIME);
+    printf("PID: %d\n", getpid());
+
+    for(int i=0 ;i<10; i++){
+        sleep(1);
     }
-}
-
-void sig_action_handler(int no, siginfo_t *info, void *ucontext)
-{
-    printf("\nCtrl + C was pressed\n");
-    KEEP_CREATING_NEW_CHILD=0;
-}
-
-int generateSubprocesses(int maxLifeTime)
-{
-    CHILD_COUNTER++;
-    pid_t pid = fork();
-    if(pid == 0)
-    {
-        LIFE_TIME = randomCalculationTime(maxLifeTime);
-        time_t now = time(NULL);
-        struct tm tm =*localtime(&now);
-        printf("[%d] [%d] [%02d/%02d/%04d %02d:%02d:%02d]\n", getpid(), LIFE_TIME, tm.tm_mday, tm.tm_mon, tm.tm_year, tm.tm_hour, tm.tm_min, tm.tm_sec);
-
-        signal(SIGINT, SIG_IGN);
-        signal(SIGALRM, sig_kill_child_proces);
-        alarm(LIFE_TIME);
-        calculateFactorial();
-    }
-    else if(pid < 0)
-    {
-        perror("fork error");
-    }
-
-    return 0;
-}
-
-void sig_child_proces_finished(int no, siginfo_t *info, void *ucontext)
-{
-    time_t now = time(NULL);
-    struct tm tm =*localtime(&now);
-
-    printf("\t\t\t\t[%d] [%d] [%02d/%02d/%04d %02d:%02d:%02d]\n", info->si_pid, info->si_status, tm.tm_mday, tm.tm_mon, tm.tm_year, tm.tm_hour, tm.tm_min, tm.tm_sec);
-    CHILD_COUNTER--;
 }
 
 int main(int argc, char** argv)
@@ -136,6 +96,14 @@ int main(int argc, char** argv)
                 numberOfThreads = strtol(cvalue, NULL, 10);
                 break;      
         }
+    }
+
+    pthread_t threads_ids[numberOfThreads];
+
+    for(int i=0; i<numberOfThreads;i++)
+    {
+        int status = pthread_create(&threads_ids[i], NULL, printPid, NULL);
+        printf("status: %d id: %ld pid: %d\n", status, threads_ids[i], getpid());
     }
 
     return 0;

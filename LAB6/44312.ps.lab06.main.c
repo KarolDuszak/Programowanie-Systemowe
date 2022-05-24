@@ -108,23 +108,12 @@ void sig_child_proces_finished(int no, siginfo_t *info, void *ucontext)
 
 int main(int argc, char** argv)
 {
-    //l <- subprocess life time
-    //c <- subprocess creation time
-    int timeToCreate=0, maxLifeTime=0;
+    //l <- thread life time
+    //n <- number of threads
+    int numberOfThreads=0, maxLifeTime=0;
     int opt;
-    struct sigaction sa;
-    sa.sa_sigaction = sig_action_handler;
-    sigemptyset(&(sa.sa_mask));
-    sa.sa_flags=SA_SIGINFO;
-    int x = sigaction(SIGINT, &sa, NULL);
 
-    struct sigaction sac;
-    sac.sa_sigaction = sig_child_proces_finished;
-    sigemptyset(&(sac.sa_mask));
-    sac.sa_flags=SA_SIGINFO;
-    int y = sigaction(SIGCHLD, &sac, NULL);
-
-    while ((opt = getopt(argc, argv, "l:c:")) != -1)
+    while ((opt = getopt(argc, argv, "l:n:")) != -1)
     {
         switch (opt)
         {
@@ -137,32 +126,16 @@ int main(int argc, char** argv)
                 char* lvalue = optarg;
                 maxLifeTime = strtol(lvalue, NULL, 10);
                 break;
-            case 'c':
+            case 'n':
                 if(isNumber(optarg)==0)
                 {
                     printf("Passed value for switch t is not a number: %s closing program\n", optarg);
                     exit(1);
                 }
                 char* cvalue = optarg;
-                timeToCreate = strtol(cvalue, NULL, 10);
+                numberOfThreads = strtol(cvalue, NULL, 10);
                 break;      
         }
-    }
-
-    while(KEEP_CREATING_NEW_CHILD)
-    {
-        int procesType = generateSubprocesses(maxLifeTime);
-        int timeLeft = sleep(timeToCreate);
-        while(timeLeft!=0)
-        {
-            timeLeft = sleep(timeLeft);
-        }
-    }
-
-    while(CHILD_COUNTER != 0)
-    {
-        printf("%d childs are still working\n", CHILD_COUNTER);
-        sleep(5);
     }
 
     return 0;

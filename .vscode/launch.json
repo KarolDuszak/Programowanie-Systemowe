@@ -5,11 +5,11 @@
       "name": "(gdb) Launch",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/LAB5/a.out",
+      "program": "${workspaceFolder}/LAB6/a.out",
       "args": [
         "-l",
         "5",
-        "-c",
+        "-n",
         "3"
       ],
       "stopAtEntry": false,
@@ -36,13 +36,11 @@
       "request": "launch",
       "args": [],
       "stopAtEntry": false,
+      "externalConsole": false,
       "cwd": "/home/dk44312/Desktop/PS/Programowanie-Systemowe",
-      "environment": [],
       "program": "/home/dk44312/Desktop/PS/Programowanie-Systemowe/build/Debug/outDebug",
-      "internalConsoleOptions": "openOnSessionStart",
       "MIMode": "gdb",
       "miDebuggerPath": "/bin/gdb",
-      "console": "integratedTerminal",
       "setupCommands": [
         {
           "description": "Enable pretty-printing for gdb",

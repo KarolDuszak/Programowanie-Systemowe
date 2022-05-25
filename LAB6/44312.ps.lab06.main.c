@@ -68,10 +68,10 @@ int randomCalculationTime(int max)
 
 void sig_end_thread(int signal)
 {
-    if(signal == SIGALRM)
+    if(signal == SIGUSR1)
     {
         int* stopCalculating = pthread_getspecific(stopCalculatingKey);
-        *stopCalculating =1;
+        *stopCalculating = 1;
     }
 }
 
@@ -116,7 +116,7 @@ void* executeThread(void* flag)
     unsigned long result=1;
     unsigned int value =1;
 
-    while(stopCalculatingKey==0)
+    while(counter==0)
     {
         result = result * value;
         value++;
@@ -166,18 +166,16 @@ int main(int argc, char** argv)
     act.sa_handler = sig_end_thread;
     act.sa_flags=0;
     sigemptyset(&(act.sa_mask));
-    sigaction(SIGALRM, &act, NULL);
+    sigaction(SIGUSR1, &act, NULL);
 
 
     for(int i=0; i<numberOfThreads;i++)
     {
         threads[i].keepCalculating=1;
-        printf("Pointer: %ls", &threads[i].keepCalculating);
         int status = pthread_create(&threads[i].thread, NULL, executeThread, &threads[i].keepCalculating);
         threads[i].lifetime = randomCalculationTime(maxLifeTime);
         printf("status: %d id: %ld life time: %d\n", status, threads[i].thread, threads[i].lifetime);
-        usleep(5000); //Za szybko sie tworza wiec zeby zroznicowac czasy umiescilem sleep bo wszystkie mialy taki sam czas
-
+        usleep(25000); //Za szybko sie tworza wiec zeby zroznicowac czasy umiescilem sleep bo wszystkie mialy taki sam czas
     }
 
     qsort(&threads, numberOfThreads,sizeof(struct threadData), compare);
@@ -197,10 +195,10 @@ int main(int argc, char** argv)
             while(left!=0)
                 left = sleep(left);
         }
-        pthread_kill(threads[i].thread, SIGALRM);
+        pthread_kill(threads[i].thread, SIGUSR1);
         timer += timeLeftToWait;
-        pthread_join(threads[i].thread, NULL);
     }
+    pthread_join(threads[0].thread, NULL);
 
     //alarm(threads[i].lifetime);
     // moze trzymac ilosc aktywynych watkow zeby program zakonczyc dopiero jak

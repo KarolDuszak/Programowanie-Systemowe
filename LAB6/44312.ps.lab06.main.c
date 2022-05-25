@@ -20,7 +20,8 @@ struct threadData{
     int lifetime;
     int keepCalculating;
 };
-static pthread_key_t stopCalculating;
+static pthread_key_t stopCalculatingKey;
+static pthread_once_t stopCalculatingOnce = PTHREAD_ONCE_INIT;
 
 int isNumber(char *number)
 {
@@ -65,23 +66,12 @@ int randomCalculationTime(int max)
     return result;
 }
 
-int sig_end_thread(const int signal, int* ptr)
+void sig_end_thread(int signal)
 {
-    int * saved = NULL;
-    if(saved==NULL)
-    {
-        saved=ptr;
-    }
     if(signal == SIGALRM)
     {
-        *saved=0;
-    }
-}
-void handler(int sig)
-{
-    if(sig==SIGUSR1)
-    {
-        printf("lol\n");
+        int* stopCalculating = pthread_getspecific(stopCalculatingKey);
+        *stopCalculating =1;
     }
 }
 
@@ -97,22 +87,36 @@ static int compare(const void *p1, const void *p2)
     else
         return 0;
 }
+static void freeMemory(void *buffer)
+{
+    free(buffer);
+}
+
+static void createKey(void)
+{
+    pthread_key_create(&stopCalculatingKey, freeMemory);
+}
 
 void* executeThread(void* flag)
 {
-    int sig;
-    sigset_t sigmask;
+    int *counter;
+    //utoworzenie klucz dla specyficznych danych przy pierwszym wywoalaniu
+    pthread_once(&stopCalculatingOnce, createKey);
 
-    //sigemptyset(&sigmask);  // to zero out all bits
-    //sigaddset(&sigmask, SIGUSR1);
-    //pthread_sigmask(SIG_UNBLOCK, &sigmask, (sigset_t*)0);
+    //pobranie pamieci powiazanej z kluczem
+    counter = pthread_getspecific(stopCalculatingKey);
+    // przy 1 wywoaniu zaalokuj pamiec i powiaz z kluczem
+    if(counter == NULL)
+    {
+        counter= malloc(sizeof(int));
+        *counter =0;
+        pthread_setspecific(stopCalculatingKey, counter);
+    }
 
-    signal(SIGALRM, (void(*)(int)) sig_end_thread);
-    sig_end_thread(SIGUSR1, &flags);
     unsigned long result=1;
     unsigned int value =1;
 
-    while(stopCalculating==0)
+    while(stopCalculatingKey==0)
     {
         result = result * value;
         value++;
@@ -158,6 +162,12 @@ int main(int argc, char** argv)
     }
 
     struct threadData threads[numberOfThreads];
+    struct sigaction act;
+    act.sa_handler = sig_end_thread;
+    act.sa_flags=0;
+    sigemptyset(&(act.sa_mask));
+    sigaction(SIGALRM, &act, NULL);
+
 
     for(int i=0; i<numberOfThreads;i++)
     {
@@ -189,6 +199,7 @@ int main(int argc, char** argv)
         }
         pthread_kill(threads[i].thread, SIGALRM);
         timer += timeLeftToWait;
+        pthread_join(threads[i].thread, NULL);
     }
 
     //alarm(threads[i].lifetime);

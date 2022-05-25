@@ -20,6 +20,7 @@ struct threadData{
     int lifetime;
     int keepCalculating;
 };
+static pthread_key_t stopCalculating;
 
 int isNumber(char *number)
 {
@@ -64,24 +65,6 @@ int randomCalculationTime(int max)
     return result;
 }
 
-void* executeThread(void* flag)
-{
-    printf("TID: %ld\n", pthread_self());
-    
-    unsigned long result=1;
-    unsigned int value =1;
-
-    while(*(int*)flag==1)
-    {
-        result = result * value;
-        value++;
-        if(result== 0){
-            result=1;
-        }
-    }
-    printf("KONIEC \n");
-}
-
 int sig_end_thread(const int signal, int* ptr)
 {
     int * saved = NULL;
@@ -92,6 +75,13 @@ int sig_end_thread(const int signal, int* ptr)
     if(signal == SIGALRM)
     {
         *saved=0;
+    }
+}
+void handler(int sig)
+{
+    if(sig==SIGUSR1)
+    {
+        printf("lol\n");
     }
 }
 
@@ -107,6 +97,33 @@ static int compare(const void *p1, const void *p2)
     else
         return 0;
 }
+
+void* executeThread(void* flag)
+{
+    int sig;
+    sigset_t sigmask;
+
+    //sigemptyset(&sigmask);  // to zero out all bits
+    //sigaddset(&sigmask, SIGUSR1);
+    //pthread_sigmask(SIG_UNBLOCK, &sigmask, (sigset_t*)0);
+
+    signal(SIGALRM, (void(*)(int)) sig_end_thread);
+    sig_end_thread(SIGUSR1, &flags);
+    unsigned long result=1;
+    unsigned int value =1;
+
+    while(stopCalculating==0)
+    {
+        result = result * value;
+        value++;
+        if(result== 0){
+            result=1;
+        }
+    }
+    printf("TID: %ld\n", pthread_self());
+    printf("KONIEC \n");
+}
+
 
 int main(int argc, char** argv)
 {
@@ -141,11 +158,7 @@ int main(int argc, char** argv)
     }
 
     struct threadData threads[numberOfThreads];
-    struct sigaction act;
-    //act.sa_sigaction = sig_end_thread;
-    
-    //sigaction(SIGALRM, &act, NULL);
-    signal(SIGALRM, (void(*)(int)) sig_end_thread);
+
     for(int i=0; i<numberOfThreads;i++)
     {
         threads[i].keepCalculating=1;
@@ -153,9 +166,7 @@ int main(int argc, char** argv)
         int status = pthread_create(&threads[i].thread, NULL, executeThread, &threads[i].keepCalculating);
         threads[i].lifetime = randomCalculationTime(maxLifeTime);
         printf("status: %d id: %ld life time: %d\n", status, threads[i].thread, threads[i].lifetime);
-        sig_end_thread(SIGUSR1, &threads[i].keepCalculating);
-        //alarm(threads[i].lifetime);
-        sleep(1); //Za szybko sie tworza wiec zeby zroznicowac czasy umiescilem sleep bo wszystkie mialy taki sam czas
+        usleep(5000); //Za szybko sie tworza wiec zeby zroznicowac czasy umiescilem sleep bo wszystkie mialy taki sam czas
 
     }
 
@@ -166,7 +177,19 @@ int main(int argc, char** argv)
     // trzeba mu przekazac jakos ta strukture
     // przy tworzeniu zeby set alarm a jak alarm sie odpali to zabic ten proces
     // mozna przekazac id np lub wskaznik i wtedy go zabic
-    
+    int timer=0;
+    for(int i=0; i<numberOfThreads; i++)
+    {
+        int timeLeftToWait = threads[i].lifetime - timer;
+        if(timeLeftToWait > 0)
+        {
+            int left = sleep(timeLeftToWait);
+            while(left!=0)
+                left = sleep(left);
+        }
+        pthread_kill(threads[i].thread, SIGALRM);
+        timer += timeLeftToWait;
+    }
 
     //alarm(threads[i].lifetime);
     // moze trzymac ilosc aktywynych watkow zeby program zakonczyc dopiero jak

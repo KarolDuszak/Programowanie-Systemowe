@@ -1,2 +1,2 @@
 extern void startTimer();
-extern void stopTimer();
+extern int stopTimer();

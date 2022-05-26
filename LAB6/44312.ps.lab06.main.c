@@ -2,7 +2,6 @@
 // Karol Duszak
 // dk44312@zut.edu.pl
 
-#define _GNU_SOURCE
 #include <stdio.h>
 #include <utmpx.h>
 #include <pwd.h>
@@ -18,7 +17,6 @@
 struct threadData{
     pthread_t thread;
     int lifetime;
-    int keepCalculating;
 };
 static pthread_key_t stopCalculatingKey;
 static pthread_once_t stopCalculatingOnce = PTHREAD_ONCE_INIT;
@@ -99,6 +97,7 @@ static void createKey(void)
 
 void* executeThread(void* flag)
 {
+    startTimer();
     int *counter;
     //utoworzenie klucz dla specyficznych danych przy pierwszym wywoalaniu
     pthread_once(&stopCalculatingOnce, createKey);
@@ -109,23 +108,23 @@ void* executeThread(void* flag)
     if(counter == NULL)
     {
         counter= malloc(sizeof(int));
-        *counter =0;
+        *counter = 0;
         pthread_setspecific(stopCalculatingKey, counter);
     }
 
     unsigned long result=1;
     unsigned int value =1;
 
-    while(counter==0)
+    while(*counter==0)
     {
         result = result * value;
         value++;
-        if(result== 0){
+        if(result == 0){
             result=1;
         }
     }
-    printf("TID: %ld\n", pthread_self());
-    printf("KONIEC \n");
+    int timeStamp = stopTimer();
+    printf("TID: %ld Time: %d\n", pthread_self(), timeStamp);
 }
 
 
@@ -171,20 +170,14 @@ int main(int argc, char** argv)
 
     for(int i=0; i<numberOfThreads;i++)
     {
-        threads[i].keepCalculating=1;
-        int status = pthread_create(&threads[i].thread, NULL, executeThread, &threads[i].keepCalculating);
+        int status = pthread_create(&threads[i].thread, NULL, executeThread, NULL);
         threads[i].lifetime = randomCalculationTime(maxLifeTime);
-        printf("status: %d id: %ld life time: %d\n", status, threads[i].thread, threads[i].lifetime);
-        usleep(25000); //Za szybko sie tworza wiec zeby zroznicowac czasy umiescilem sleep bo wszystkie mialy taki sam czas
+        printf("Tid: %ld life time: %d\n", threads[i].thread, threads[i].lifetime);
+        usleep(2500); //Za szybko sie tworza wiec zeby zroznicowac czasy umiescilem sleep bo wszystkie mialy taki sam czas
     }
 
     qsort(&threads, numberOfThreads,sizeof(struct threadData), compare);
-    //pthread_kill moze sygnal wyslac wybrany a tam juz mozna obsluzyc xDDD
 
-    // Teraz to musi by wywolywane przez sygnal
-    // trzeba mu przekazac jakos ta strukture
-    // przy tworzeniu zeby set alarm a jak alarm sie odpali to zabic ten proces
-    // mozna przekazac id np lub wskaznik i wtedy go zabic
     int timer=0;
     for(int i=0; i<numberOfThreads; i++)
     {
@@ -197,15 +190,14 @@ int main(int argc, char** argv)
         }
         pthread_kill(threads[i].thread, SIGUSR1);
         timer += timeLeftToWait;
+        //pthread_join(threads[i].thread, NULL);
     }
-    pthread_join(threads[0].thread, NULL);
 
-    //alarm(threads[i].lifetime);
-    // moze trzymac ilosc aktywynych watkow zeby program zakonczyc dopiero jak
-    // wszystkie zostana ubite?
-    sleep(5);
-    //threads[0].keepCalculating=0;
-    sleep(10);
+    for(int i=0; i<numberOfThreads; i++)
+    {
+        pthread_cancel(threads[i].thread);
+        pthread_join(threads[i].thread, NULL);
+    }
 
     return 0;
 }

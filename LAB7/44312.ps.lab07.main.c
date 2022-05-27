@@ -30,11 +30,16 @@ int isNumber(char *number)
     return 1;
 }
 
+char* loadDict(char* path)
+{
+    
+}
+
 int main(int argc, char **argv)
 {
     char* hash=NULL;
     char* pathToFile=NULL;
-    int threadsNumber = 1;
+    int threadsNumber = 0;
     int opt;
     long number_of_processors = sysconf(_SC_NPROCESSORS_ONLN);
 

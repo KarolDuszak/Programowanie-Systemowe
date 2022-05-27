@@ -1,24 +1,26 @@
-// PS IN1 320 LAB04
+// PS IN1 320 LAB07
 // Karol Duszak
 // dk44312@zut.edu.pl
 
 #include <stdio.h>
-#include <utmpx.h>
-#include <pwd.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
-#include <ctype.h>
+#include <crypt.h>
 #include <unistd.h>
-#include <fcntl.h>
-#include <time.h>
-#include <sys/wait.h>
-#include <sys/resource.h>
 
 
 char* hashPassword(char* password, char* salt)
-{
-    return "a";
+{    
+    size_t len;
+    char* encrypted;
+    len = strlen(salt);
+    char salt2[len+3];
+    strcpy(salt2,"$6$");
+    strcat(salt2, salt);
+    printf("%s", salt2);
+    
+    encrypted = crypt(password, salt2);
+    return encrypted;
 }
 
 int main(int argc, char **argv)

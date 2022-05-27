@@ -7,6 +7,8 @@
 #include <string.h>
 #include <crypt.h>
 #include <unistd.h>
+#include <ctype.h>
+
 
 int isNumber(char *number)
 {
@@ -34,8 +36,9 @@ int main(int argc, char **argv)
     char* pathToFile=NULL;
     int threadsNumber = 1;
     int opt;
+    long number_of_processors = sysconf(_SC_NPROCESSORS_ONLN);
 
-    while ((opt = getopt(argc, argv, "s:p:")) != -1)
+    while ((opt = getopt(argc, argv, "h:p:t:")) != -1)
     {
         switch (opt)
         {
@@ -53,10 +56,15 @@ int main(int argc, char **argv)
                 }
                 char* cvalue = optarg;
                 threadsNumber = strtol(cvalue, NULL, 10);
+                if(threadsNumber>number_of_processors)
+                {
+                    threadsNumber = number_of_processors;
+                }
             break;
         }
     }
 
-    printf("Hash: %s pahtToFile: %s threads: %d\n", hash, pathToFile, threadsNumber);
+    printf("Hash: %s pahtToFile: %s threads: %d MaxNrOfProcesors: %ld\n", hash, pathToFile, threadsNumber, number_of_processors);
+    return 0;
 
 }

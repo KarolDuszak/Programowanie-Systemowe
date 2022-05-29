@@ -167,13 +167,16 @@ int main(int argc, char** argv)
     sigemptyset(&(act.sa_mask));
     sigaction(SIGUSR1, &act, NULL);
 
+    for(int i=0; i<numberOfThreads;i++)
+    {
+        threads[i].lifetime = randomCalculationTime(maxLifeTime);
+        usleep(598200); //Za szybko sie tworza wiec zeby zroznicowac czasy umiescilem sleep bo wszystkie mialy taki sam czas
+    }
 
     for(int i=0; i<numberOfThreads;i++)
     {
         int status = pthread_create(&threads[i].thread, NULL, executeThread, NULL);
-        threads[i].lifetime = randomCalculationTime(maxLifeTime);
         printf("Tid: %ld life time: %d\n", threads[i].thread, threads[i].lifetime);
-        usleep(2500); //Za szybko sie tworza wiec zeby zroznicowac czasy umiescilem sleep bo wszystkie mialy taki sam czas
     }
 
     qsort(&threads, numberOfThreads,sizeof(struct threadData), compare);
